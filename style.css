@@ -1,0 +1,330 @@
+:root{
+  --maroon:#a50309;
+  --maroon-dark:#7e0202;
+  --paper:#FFF8E7;
+  --gold:#caa14a;
+  --muted:#7c6b62;
+  --card-border:#dfd2c4;
+}
+
+/* Import font elegante */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Lora', serif;
+  background: linear-gradient(180deg,#fffaf0 0%, #f7efe4 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* stage: verticale per mettere la caption sotto la busta */
+.stage{
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-left: 0;
+  padding-right: 0;
+  box-sizing: border-box;
+  z-index: 10;
+  background: transparent;
+}
+
+/* didascalia sotto la busta - centrata e responsiva */
+.envelope-caption{
+  display: block;
+  width: 100%;
+  max-width: 90vw;
+  text-align: center;
+  margin: 0 auto;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2.6vw, 1.05rem);
+  color: rgba(44,34,31,0.85);
+  letter-spacing: 0.3px;
+  z-index: 11;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity .34s ease, transform .34s ease;
+  opacity: 1;
+  transform: translateY(0);
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+/* nasconde la didascalia quando la busta è aperta */
+.stage.card-open .envelope-caption{
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+
+.envelope-wrap {
+  width: clamp(280px, 80%, 520px);
+  max-width: 90vw;
+  aspect-ratio: 3 / 2;
+  perspective: 1300px;
+  position: relative;
+  margin: 0;
+  z-index: 12;
+  pointer-events: auto;
+}
+
+/* small tweak: forza compositing */
+.envelope, .envelope-wrap {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* optional debug */
+/* .debug-envelope { outline: 2px dashed rgba(0,255,100,0.9); } */
+
+.stage.card-open .envelope-wrap{
+  transform: scale(.86);
+  opacity:.6;
+}
+.envelope{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  cursor:pointer;
+  user-select:none;
+}
+.envelope .body{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg,var(--maroon) 0%, #8d151a 40%);
+  border-radius:10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+  transform:translateZ(-10px);
+  overflow:hidden;
+}
+.envelope .flap{
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:58%;
+  transform-origin: top center;
+  background: linear-gradient(180deg,#8f0f12 0%, #70090a 60%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius:8px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+  transition: transform 700ms cubic-bezier(.22,.9,.35,1), box-shadow 300ms;
+  z-index:6;
+}
+.envelope .monogram{
+  position:absolute; top:12%; left:50%;
+  transform:translateX(-50%);
+  font-family:'Great Vibes', cursive;
+  color:var(--paper);
+  font-size:clamp(16px,3.2vw,64px);
+  text-shadow: 0 2px 6px rgba(0,0,0,.35);
+  z-index:7;
+  pointer-events:none;
+}
+
+/* sigillo medaglione */
+.seal{
+  position:absolute; left:50%; top:48%;
+  transform:translate(-50%,-50%);
+  border:0; background:transparent;
+  width:14vw; max-width:86px; aspect-ratio:1/1;
+  padding:0;
+  display:flex; align-items:center; justify-content:center;
+  z-index:9;
+  cursor:pointer;
+  transition: transform .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.medal{
+  width:100%; height:100%;
+  display:inline-grid;
+  place-items:center;
+  border-radius:50%;
+  background: radial-gradient(circle at 35% 25%, rgba(255,255,220,0.95), rgba(238, 192, 55, 0.8) 28%, rgb(169, 102, 20) 70%);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35), inset 0 6px 12px rgba(255,255,255,0.06);
+  padding:6%;
+  position:relative;
+  overflow:visible;
+  border: 2px solid rgba(255,245,220,0.25);
+}
+.medal::before{
+  content:"";
+  position:absolute;
+  inset:8% ;
+  border-radius:50%;
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.08), inset 0 -2px 6px rgba(0,0,0,0.12);
+  pointer-events:none;
+}
+.medal-initial{
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 4.8vw, 34px);
+  color: rgba(163, 0, 0, 0.98);
+  text-shadow: 0 3px 10px rgba(255,240,180,0.12);
+  font-weight:700;
+  transform: translateY(1px);
+}
+.seal:focus-visible .medal,
+.seal:hover .medal{
+  transform: scale(1.02);
+  transition: transform .22s ease;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.38), inset 0 8px 16px rgba(255,255,255,0.03);
+}
+.seal.pulsing { animation: sealPulse 1.6s infinite; }
+@keyframes sealPulse{
+  0%{ transform: translate(-50%,-50%) scale(1); }
+  50%{ transform: translate(-50%,-52%) scale(1.03); }
+  100%{ transform: translate(-50%,-50%) scale(1); }
+}
+
+/* apertura flap / sparizione sigillo */
+.envelope.open .flap{ transform: rotateX(-180deg) translateY(-8%); box-shadow: 0 2px 20px rgba(0,0,0,.18); }
+.envelope.open .seal{ transform: translate(-50%,-200%); opacity:0; transition: transform .6s ease, opacity .4s; }
+
+/* CARD */
+.card{
+  --card-w: 82%;
+  position:absolute;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%) scale(.86);
+  width:var(--card-w);
+  max-width:700px;
+  height:70%; max-height:520px;
+  background: linear-gradient(180deg, #a00101 0%, #a00101 100%);
+  border-radius:18px;
+  border:1px solid var(--card-border);
+  box-shadow:0 22px 70px rgba(0,0,0,.35);
+  padding:28px;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition: all .6s cubic-bezier(.2,.9,.3,1);
+  z-index:20;
+}
+.stage.card-open .card{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+
+/* inner panel */
+.card-inner{ width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.frame{ width:92%; max-width:560px; height:86%; border-radius:14px; padding:28px; background: linear-gradient(180deg, rgba(255,255,250,0.99), rgba(255,250,245,0.99)); box-shadow: 0 12px 28px rgba(0,0,0,.08); display:flex; align-items:center; justify-content:center; }
+.frame-inner{ width:100%; height:100%; border-radius:10px; padding:18px 20px; border:1px solid rgba(202,161,74,0.12); display:flex; flex-direction:column; align-items:center; justify-content:space-between; }
+
+/* Hero */
+.hero{ display:flex; flex-direction:column; align-items:center; gap:6px; margin-top:6px; }
+.big-number{
+  font-family:'Playfair Display', serif;
+  font-weight:900;
+  font-size:clamp(48px,12vw,140px);
+  line-height:0.85;
+  color:var(--maroon);
+  text-shadow:0 4px 12px rgba(0,0,0,.18), 0 0 8px rgba(255,255,255,.06);
+}
+
+/* Mantieni dimensione e font invariati ma aggiungi brillantezza */
+.hero .big-number {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(48px, 12vw, 140px);
+  line-height: 0.85;
+  color: var(--maroon-dark);
+  text-shadow: 0 4px 12px rgba(0,0,0,.18), 0 0 8px rgba(255,255,255,.06);
+  position: relative;
+  display: inline-block;
+  animation: sparkleScale 2.5s infinite alternate;
+}
+
+/* Nuova regola per il nome */
+h1#name {
+  font-family: 'Great Vibes', 'Playfair Display', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(34px, 8.6vw, 110px);
+  line-height: 0.9;
+  margin: 0;
+  color: var(--maroon);
+  letter-spacing: 0.6px;
+  text-transform: none;
+  display: inline-block;
+  transform-origin: center;
+  animation: sparkleScale 2.5s infinite alternate;
+  text-shadow: 0 3px 10px rgba(0,0,0,.16), 0 0 6px rgba(255,240,180,0.12);
+}
+
+@keyframes sparkleScale {
+  0%   { transform: scale(1); text-shadow: 0 4px 12px rgba(0,0,0,.18),0 0 8px rgba(255,255,255,.06); }
+  50%  { transform: scale(1.06); text-shadow:0 4px 12px rgba(0,0,0,.18),0 0 8px #ffe066b3,0 0 12px #ffd700; }
+  100% { transform: scale(1); text-shadow: 0 4px 12px rgba(0,0,0,.18),0 0 8px rgba(255,255,255,.06); }
+}
+
+/* Tagline */
+.tagline{
+  font-family:'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight:400;
+  font-size:clamp(0.85rem,1.5vw,0.95rem);
+  color:var(--maroon);
+  letter-spacing:0.6px;
+  margin-top:-2px;
+}
+
+/* Content elegante */
+.content,
+.content .lead,
+#details,
+#conferma,
+.foot {
+  font-family:'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight:400;
+  line-height:1.6;
+  color:#423a35;
+  text-align:center;
+  letter-spacing:0.5px;
+}
+
+.content .lead { font-size:clamp(1rem,2vw,1.04rem); font-weight:600; color:#3c332e; margin-bottom:6px; }
+#details strong, #conferma strong { font-weight:700; font-style: italic; }
+
+.sep{ width:48%; height:1px; background:linear-gradient(90deg, transparent, rgba(158,1,1,0.6), transparent); margin:12px auto; border-radius:2px; }
+
+/* Bottoni sempre orizzontali */
+.actions{
+  width:100%; display:flex; gap:12px; justify-content:center; align-items:center; padding:0 6%; margin-bottom:2px; flex-wrap: nowrap;
+}
+.actions a.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:.62rem 1.1rem; min-width:120px; font-weight:700; border-radius:999px; border:2px solid rgba(155,3,3,0.9); background:transparent; color:#2b2320; text-decoration:none; box-shadow:0 6px 18px rgba(0,0,0,.08); transition: all .22s ease; backdrop-filter: blur(2px);}
+.actions a.btn:hover{ transform:translateY(-3px); background:linear-gradient(180deg, rgba(144,2,2,0.12), rgba(202,161,74,0.06)); box-shadow:0 14px 30px rgba(0,0,0,.12);}
+.actions a.btn.primary{ background: linear-gradient(180deg, rgba(202,161,74,0.12), rgba(202,161,74,0.06)); border-color:var(--maroon); }
+
+/* canvas che copre il biglietto */
+canvas#card-glitters {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 25; /* sopra il contenuto del card per effetto glitter "sul biglietto" */
+  border-radius: inherit;
+  display:block;
+}
+
+/* Media query mobile */
+@media(max-width:768px){
+  .envelope-wrap{ width:80%; max-width:320px; }
+  .seal{ width:20vw; max-width:64px; }
+  .card{ width:90%; height:75%; max-height:480px; padding:16px; }
+  .frame{ padding:18px; }
+  .frame-inner{ padding:12px 14px; }
+  .actions a.btn{ min-width:100px; font-size:0.85rem; padding:.5rem .9rem; }
+}
+
